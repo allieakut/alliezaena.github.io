@@ -314,10 +314,10 @@ projects.forEach((proj, pi) => {
       ${slideEls}${dots}
       ${hasVideo?'<span class="video-badge">▶ Video</span>':''}
     </div>
-    <div class="project-info">
+    ${proj.filter !== 'video' ? `<div class="project-info">
       <p class="project-cat">${proj.cat}</p>
       <p class="project-title">${proj.title}</p>
-    </div>`;
+    </div>` : ''}`;
 
   card.addEventListener('click', () => openLightbox(pi));
   grid.appendChild(card);
@@ -402,4 +402,3 @@ async function submitForm(e){
 </script>
 </body>
 </html>
-
