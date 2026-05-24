@@ -235,9 +235,7 @@ footer span{color:var(--sage)}
       <p id="formMsg" style="text-align:center;font-size:0.88rem;margin-top:0.5rem;display:none"></p>
     </div>
     <p style="margin-top:1.5rem;font-size:0.88rem;color:var(--text-muted)">Or reach me directly at <a href="mailto:alliezaena8@gmail.com" style="color:var(--sage-dark);text-decoration:none">alliezaena8@gmail.com</a></p>
-    <div class="socials">
-      <a href="#">Instagram</a><a href="#">Behance</a><a href="#">LinkedIn</a><a href="#">Dribbble</a>
-    </div>
+
   </div>
 </section>
 
@@ -277,13 +275,13 @@ document.getElementById('toolTrack').addEventListener('mouseleave', function(){ 
 // ── PROJECT DATA ──────────────────────────────
 const projects = [
   // SOCIAL MEDIA
-  { title:'Social Media Content', cat:'Social Media', filter:'social', files:[
+  { title:'', cat:'Social Media', filter:'social', files:[
     {src:'images/soc1.tonya.png',type:'image'},
     {src:'images/soc2.tonya.png',type:'image'},
     {src:'images/soc3.tonya.png',type:'image'},
     {src:'images/soc4.tonya.png',type:'image'},
   ]},
-  { title:'Social Media Content', cat:'Social Media', filter:'social', files:[
+  { title:'', cat:'Social Media', filter:'social', files:[
     {src:'images/camco1.jpg',type:'image'},
     {src:'images/camco3.png',type:'image'},
     {src:'images/camco4.jpg',type:'image'},
@@ -365,7 +363,7 @@ projects.forEach((proj, pi) => {
     ? `<div class="slide-dots">${proj.files.map((_,i)=>`<span class="dot${i===0?' active':''}"></span>`).join('')}</div>`
     : '';
 
-  const infoHTML = proj.filter !== 'video'
+  const infoHTML = (proj.filter !== 'video' && proj.title !== '')
     ? `<div class="project-info"><p class="project-cat">${proj.cat}</p><p class="project-title">${proj.title}</p></div>`
     : '';
 
