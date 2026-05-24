@@ -105,6 +105,7 @@ section{padding:6rem 8%}
 .socials{display:flex;justify-content:center;gap:1.5rem;margin-top:2.5rem}
 .socials a{font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.3s}
 .socials a:hover{color:var(--sage-dark)}
+.tool-pill{display:flex;align-items:center;padding:0.4rem 1rem;border-radius:50px;border:1px solid rgba(138,158,138,0.3);background:var(--white);white-space:nowrap;font-size:0.78rem;letter-spacing:0.06em;color:var(--text-muted);text-transform:uppercase}
 
 footer{padding:1.5rem 8%;text-align:center;border-top:1px solid rgba(138,158,138,0.15)}
 footer p{font-size:0.78rem;color:var(--text-muted)}
@@ -112,6 +113,7 @@ footer span{color:var(--sage)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scrollPulse{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes scrollTools{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:768px){
   .nav-links{display:none}
   .about-inner{grid-template-columns:1fr;gap:2.5rem}
@@ -150,7 +152,6 @@ footer span{color:var(--sage)}
     <div class="service-card"><div class="service-icon">📱</div><h3>Social Media Graphics</h3><p>Eye-catching content designed to elevate your brand presence across all digital platforms.</p></div>
     <div class="service-card"><div class="service-icon">✏️</div><h3>Typography & Layout</h3><p>Clean, considered typographic compositions and layouts that balance beauty with function.</p></div>
   </div>
-
   <p class="section-label" style="margin-top:4rem">Also Available</p>
   <h2 class="section-title" style="margin-bottom:1.5rem">Other Services</h2>
   <div class="services-grid">
@@ -161,17 +162,14 @@ footer span{color:var(--sage)}
   </div>
 </section>
 
-<section id="tools" style="background:var(--bg2);padding:3rem 8%;overflow:hidden">
+<section id="tools" style="background:var(--bg);padding:3rem 8%;overflow:hidden">
   <p class="section-label">My Toolkit</p>
-  <div style="position:relative;overflow:hidden;mask:linear-gradient(to right,transparent,black 10%,black 90%,transparent);-webkit-mask:linear-gradient(to right,transparent,black 10%,black 90%,transparent)">
-    <div id="toolTrack" style="display:flex;gap:3rem;align-items:center;width:max-content;animation:scrollTools 18s linear infinite">
-      <div id="toolSet" style="display:flex;gap:3rem;align-items:center"></div>
-      <div id="toolSet2" style="display:flex;gap:3rem;align-items:center"></div>
+  <div style="position:relative;overflow:hidden;mask:linear-gradient(to right,transparent,black 10%,black 90%,transparent);-webkit-mask:linear-gradient(to right,transparent,black 10%,black 90%,transparent);margin-top:1.5rem">
+    <div id="toolTrack" style="display:flex;gap:1.5rem;align-items:center;width:max-content;animation:scrollTools 25s linear infinite">
+      <div id="toolSet"  style="display:flex;gap:1.5rem;align-items:center"></div>
+      <div id="toolSet2" style="display:flex;gap:1.5rem;align-items:center"></div>
     </div>
   </div>
-  <style>
-    @keyframes scrollTools{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  </style>
 </section>
 
 <section id="work">
@@ -248,11 +246,35 @@ footer span{color:var(--sage)}
 </footer>
 
 <script>
-// ═══════════════════════════════════════════════
-// YOUR PROJECT DATA — replace filenames with your real ones!
-// Images: works/filename.jpg   Videos: works/filename.mp4
-// filter options: 'social' | 'apparel' | 'branding' | 'print' | 'video'
-// ═══════════════════════════════════════════════
+// ── TOOLS MARQUEE ─────────────────────────────
+const tools = [
+  'CorelDRAW','Adobe Creative','Canva','CapCut',
+  'Shopify','GitHub','Wix','Amazon','Walmart',
+  'Claude','ChatGPT','Gemini'
+];
+
+function buildTools(el) {
+  tools.forEach((name, i) => {
+    const pill = document.createElement('div');
+    pill.className = 'tool-pill';
+    pill.textContent = name;
+    el.appendChild(pill);
+    if(i < tools.length - 1) {
+      const sep = document.createElement('span');
+      sep.textContent = '✦';
+      sep.style.cssText = 'color:var(--sage-light);flex-shrink:0;font-size:0.7rem';
+      el.appendChild(sep);
+    }
+  });
+}
+
+buildTools(document.getElementById('toolSet'));
+buildTools(document.getElementById('toolSet2'));
+
+document.getElementById('toolTrack').addEventListener('mouseenter', function(){ this.style.animationPlayState='paused'; });
+document.getElementById('toolTrack').addEventListener('mouseleave', function(){ this.style.animationPlayState='running'; });
+
+// ── PROJECT DATA ──────────────────────────────
 const projects = [
   // SOCIAL MEDIA
   { title:'Social Media Content', cat:'Social Media', filter:'social', files:[
@@ -285,7 +307,7 @@ const projects = [
     {src:'images/app11.png',type:'image'},
   ]},
 
-  // BRANDING/LOGO
+  // LOGO
   { title:'Logo Collection', cat:'Logo', filter:'branding', files:[
     {src:'images/logo1.jpg',type:'image'},
     {src:'images/logo2.jpg',type:'image'},
@@ -323,7 +345,7 @@ const projects = [
   { title:'', cat:'Video', filter:'video', files:[{src:'video5.mp4',type:'video'}]},
 ];
 
-// ── Build cards ──
+// ── BUILD CARDS ───────────────────────────────
 const grid = document.getElementById('projectsGrid');
 const timers = {};
 
@@ -343,20 +365,20 @@ projects.forEach((proj, pi) => {
     ? `<div class="slide-dots">${proj.files.map((_,i)=>`<span class="dot${i===0?' active':''}"></span>`).join('')}</div>`
     : '';
 
+  const infoHTML = proj.filter !== 'video'
+    ? `<div class="project-info"><p class="project-cat">${proj.cat}</p><p class="project-title">${proj.title}</p></div>`
+    : '';
+
   card.innerHTML = `
     <div class="slide-wrap" id="sw${pi}">
       ${slideEls}${dots}
-      ${hasVideo?'<span class="video-badge">▶ Video</span>':''}
-    </div>
-    ${proj.filter !== 'video' ? `<div class="project-info">
-      <p class="project-cat">${proj.cat}</p>
-      <p class="project-title">${proj.title}</p>
-    </div>` : ''}`;
+      ${hasVideo ? '<span class="video-badge">▶ Video</span>' : ''}
+    </div>${infoHTML}`;
 
   card.addEventListener('click', () => openLightbox(pi));
   grid.appendChild(card);
 
-  if(proj.files.length > 1){
+  if(proj.files.length > 1) {
     let cur = 0;
     timers[pi] = setInterval(() => {
       const sw = document.getElementById('sw'+pi);
@@ -372,7 +394,7 @@ projects.forEach((proj, pi) => {
   }
 });
 
-// ── Filter tabs ──
+// ── FILTER ────────────────────────────────────
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -384,94 +406,79 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-// ── Lightbox ──
+// ── LIGHTBOX ──────────────────────────────────
 let lbProj = 0, lbIdx = 0;
-const lb = document.getElementById('lightbox');
-const lbMain = document.getElementById('lbMain');
+const lb      = document.getElementById('lightbox');
+const lbMain  = document.getElementById('lbMain');
 const lbThumbs = document.getElementById('lbThumbs');
 
-function openLightbox(pi){ lbProj=pi; lbIdx=0; renderLb(); lb.classList.add('open'); document.body.style.overflow='hidden'; }
+function openLightbox(pi) { lbProj=pi; lbIdx=0; renderLb(); lb.classList.add('open'); document.body.style.overflow='hidden'; }
 
-function renderLb(){
+function renderLb() {
   const proj = projects[lbProj];
   document.getElementById('lbTitle').textContent = proj.title;
   document.getElementById('lbCat').textContent   = proj.cat;
   const f = proj.files[lbIdx];
-  lbMain.innerHTML = f.type==='video'
+  lbMain.innerHTML = f.type === 'video'
     ? `<video src="${f.src}" controls style="max-width:100%;max-height:70vh;border-radius:12px"></video>`
     : `<img src="${f.src}" alt="${proj.title}"/>`;
-  lbThumbs.innerHTML = proj.files.map((fl,i)=>
-    `<img class="lb-thumb${i===lbIdx?' active':''}" src="${fl.type==='video'?'':fl.src}" data-i="${i}" alt="thumb ${i+1}"/>`
+  lbThumbs.innerHTML = proj.files.map((fl,i) =>
+    fl.type === 'video'
+      ? `<div class="lb-thumb${i===lbIdx?' active':''}" data-i="${i}" style="display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;border-radius:6px;width:60px;height:45px;flex-shrink:0;border:2px solid ${i===lbIdx?'var(--sage)':'transparent'}">▶</div>`
+      : `<img class="lb-thumb${i===lbIdx?' active':''}" src="${fl.src}" data-i="${i}" alt="thumb ${i+1}"/>`
   ).join('');
-  lbThumbs.querySelectorAll('.lb-thumb').forEach(t=>{
-    t.addEventListener('click',()=>{ lbIdx=+t.dataset.i; renderLb(); });
+  lbThumbs.querySelectorAll('[data-i]').forEach(t => {
+    t.addEventListener('click', () => { lbIdx = +t.dataset.i; renderLb(); });
   });
 }
 
 document.getElementById('lbClose').addEventListener('click', closeLb);
-lb.addEventListener('click', e=>{ if(e.target===lb) closeLb(); });
-document.getElementById('lbPrev').addEventListener('click',()=>{ lbIdx=(lbIdx-1+projects[lbProj].files.length)%projects[lbProj].files.length; renderLb(); });
-document.getElementById('lbNext').addEventListener('click',()=>{ lbIdx=(lbIdx+1)%projects[lbProj].files.length; renderLb(); });
-document.addEventListener('keydown', e=>{
+lb.addEventListener('click', e => { if(e.target === lb) closeLb(); });
+document.getElementById('lbPrev').addEventListener('click', () => { lbIdx=(lbIdx-1+projects[lbProj].files.length)%projects[lbProj].files.length; renderLb(); });
+document.getElementById('lbNext').addEventListener('click', () => { lbIdx=(lbIdx+1)%projects[lbProj].files.length; renderLb(); });
+document.addEventListener('keydown', e => {
   if(!lb.classList.contains('open')) return;
   if(e.key==='Escape') closeLb();
   if(e.key==='ArrowLeft') document.getElementById('lbPrev').click();
   if(e.key==='ArrowRight') document.getElementById('lbNext').click();
 });
 
-function closeLb(){ lb.classList.remove('open'); document.body.style.overflow=''; lbMain.innerHTML=''; }
+function closeLb() { lb.classList.remove('open'); document.body.style.overflow=''; lbMain.innerHTML=''; }
 
-const tools = [
-  {name:'CorelDRAW', url:'https://cdn.simpleicons.org/coreldraw'},
-  {name:'Photoshop', url:'https://cdn.simpleicons.org/adobephotoshop'},
-  {name:'Canva',     url:'https://cdn.simpleicons.org/canva'},
-  {name:'CapCut',    url:'https://cdn.simpleicons.org/capcut'},
-  {name:'Shopify',   url:'https://cdn.simpleicons.org/shopify'},
-  {name:'GitHub',    url:'https://cdn.simpleicons.org/github'},
-  {name:'Wix',       url:'https://cdn.simpleicons.org/wix'},
-  {name:'Amazon',    url:'https://cdn.simpleicons.org/amazon'},
-  {name:'Walmart',   url:'https://cdn.simpleicons.org/walmart'},
-  {name:'Claude',    url:'https://cdn.simpleicons.org/anthropic'},
-  {name:'ChatGPT',   url:'https://cdn.simpleicons.org/openai'},
-  {name:'Gemini',    url:'https://cdn.simpleicons.org/googlegemini'},
-];
-
-function buildTools(el){
-  tools.forEach((t,i)=>{
-    const img = document.createElement('img');
-    img.src = t.url;
-    img.alt = t.name;
-    img.title = t.name;
-    img.style.cssText='height:32px;width:32px;object-fit:contain;opacity:0.6;filter:grayscale(30%)';
-    el.appendChild(img);
-    if(i < tools.length-1){
-      const sep = document.createElement('span');
-      sep.textContent='✦';
-      sep.style.cssText='color:var(--sage-light);flex-shrink:0';
-      el.appendChild(sep);
-    }
-  });
-}
-
-buildTools(document.getElementById('toolSet'));
-buildTools(document.getElementById('toolSet2'));
-
-// fix animation width after images load
-window.addEventListener('load',()=>{
-  const half = document.getElementById('toolSet').offsetWidth + 48;
-  document.getElementById('toolTrack').style.setProperty('--half', half+'px');
-});
-
+// ── CONTACT FORM ──────────────────────────────
+async function submitForm(e) {
   e.preventDefault();
-  const btn=document.getElementById('submitBtn'), msg=document.getElementById('formMsg'), form=document.getElementById('contactForm');
-  const data={ name:form.querySelector('[name="name"]').value, email:form.querySelector('[name="email"]').value, subject:form.querySelector('[name="subject"]').value, message:form.querySelector('[name="message"]').value };
-  if(!data.name||!data.email||!data.message){ msg.style.display='block'; msg.style.color='#c0392b'; msg.textContent='Please fill in all required fields.'; return; }
+  const btn  = document.getElementById('submitBtn');
+  const msg  = document.getElementById('formMsg');
+  const form = document.getElementById('contactForm');
+  const data = {
+    name:    form.querySelector('[name="name"]').value,
+    email:   form.querySelector('[name="email"]').value,
+    subject: form.querySelector('[name="subject"]').value,
+    message: form.querySelector('[name="message"]').value
+  };
+  if(!data.name || !data.email || !data.message) {
+    msg.style.display='block'; msg.style.color='#c0392b';
+    msg.textContent='Please fill in all required fields.'; return;
+  }
   btn.textContent='Sending...'; btn.disabled=true;
-  try{
-    const res=await fetch('https://formspree.io/f/xvzlrvzw',{ method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body:JSON.stringify(data) });
-    if(res.ok){ msg.style.display='block'; msg.style.color='var(--sage-dark)'; msg.textContent="✓ Message sent! I'll get back to you soon."; form.querySelectorAll('input,textarea').forEach(el=>el.value=''); btn.textContent='Send Message'; btn.disabled=false; }
-    else { throw new Error(); }
-  } catch { msg.style.display='block'; msg.style.color='#c0392b'; msg.textContent='Something went wrong. Please email me directly.'; btn.textContent='Send Message'; btn.disabled=false; }
+  try {
+    const res = await fetch('https://formspree.io/f/xvzlrvzw', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(data)
+    });
+    if(res.ok) {
+      msg.style.display='block'; msg.style.color='var(--sage-dark)';
+      msg.textContent="✓ Message sent! I'll get back to you soon.";
+      form.querySelectorAll('input,textarea').forEach(el => el.value='');
+      btn.textContent='Send Message'; btn.disabled=false;
+    } else { throw new Error(); }
+  } catch {
+    msg.style.display='block'; msg.style.color='#c0392b';
+    msg.textContent='Something went wrong. Please email me directly.';
+    btn.textContent='Send Message'; btn.disabled=false;
+  }
 }
 </script>
 </body>
